@@ -22,8 +22,8 @@ async def main():
     response_text = ""
     llm = OpenAI(model="gpt-3.5-turbo-instruct", temperature=0, max_tokens=512)
 
-
-    for chunk in llm.stream("Write me a song about sparkling water."):
-        response_text += chunk
+    async def event_stream():
+        for chunk in llm.stream("Write me a song about sparkling water."):
+            yield f"data: {chunk}\n\n"
             
-    return {"response": response_text}
+    return StreamingResponse(event_stream(), media_type="text/event-stream")
