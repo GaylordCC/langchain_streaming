@@ -27,6 +27,7 @@ async def main():
     response_text = ""
     llm = ChatOpenAI(model="gpt-4", temperature=0, max_tokens=512)
     messages =[("Write me a song about sparkling water.")]
+    
     async def event_stream():
         for chunk in llm.stream(messages):
             yield f"data: {chunk}\n\n"
@@ -34,10 +35,7 @@ async def main():
     response = StreamingResponse(event_stream(), media_type="text/event-stream")
 
     end_time = time.time()  # End timing
-
-    # Calculate the time taken
-    time_taken = end_time - start_time
-
+    time_taken = end_time - start_time  # Time taken
     print(f"Time taken to generate response: {time_taken} seconds")
 
     return response
