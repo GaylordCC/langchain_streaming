@@ -19,7 +19,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/main-streaming-endpoint")
+@app.get("/chatopenai-streaming-endpoint")
 async def main():
     start_time = time.time()  # Start timing
 
@@ -27,7 +27,7 @@ async def main():
     response_text = ""
     llm = ChatOpenAI(model="gpt-4", temperature=0, max_tokens=512)
     messages =[("Write me a song about sparkling water.")]
-    
+
     async def event_stream():
         for chunk in llm.stream(messages):
             yield f"data: {chunk}\n\n"
