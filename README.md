@@ -17,6 +17,7 @@ python3 main_streaming.py
 # Run the server with: 
 uvicorn main_streaming:app --reload
 uvicorn main_streaming_v2:app --reload
+uvicorn main_streaming_v3:app --reload
 
 # Open the project in the browser
     localhost:8000
