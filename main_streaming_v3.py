@@ -1,14 +1,13 @@
 from fastapi import FastAPI
 from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
-from openai import AsyncOpenAI
 
-from langchain_openai import ChatOpenAI, OpenAI, AzureChatOpenAI
+
+from langchain_openai import AzureChatOpenAI
 
 import os
 
 app = FastAPI()
-client = AsyncOpenAI()
 
 # Configure CORS
 app.add_middleware(
@@ -23,7 +22,7 @@ app.add_middleware(
 async def main():
 
     response_text = ""
-    llm = AzureChatOpenAI(
+    model = AzureChatOpenAI(
         openai_api_version=os.getenv("AZURE_OPENAI_API_VERSION_CHAT"),
         azure_deployment=os.getenv("AZURE_OPENAI_CHAT_DEPLOYMENT_NAME"),
         azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
@@ -31,8 +30,10 @@ async def main():
     )
     messages =[("Tell me a joke about dogs")]
 
+    chunks = []
     async def event_stream():
-        for chunk in llm.stream(messages):
+        async for chunk in model.astream(messages):
+            chunks.append(chunk)
             yield f"data: {chunk.content}\n\n"
             
     return StreamingResponse(event_stream(), media_type="text/event-stream")
