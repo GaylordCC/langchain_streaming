@@ -22,7 +22,6 @@ app.add_middleware(
 @app.get("/azureopenai-streaming-endpoint")
 async def main():
 
-    # OpenAI(model="gpt-3.5-turbo-instruct", temperature=0, max_tokens=512)
     response_text = ""
     llm = AzureChatOpenAI(
         openai_api_version=os.getenv("AZURE_OPENAI_API_VERSION_CHAT"),
@@ -34,6 +33,6 @@ async def main():
 
     async def event_stream():
         for chunk in llm.stream(messages):
-            yield f"data: {chunk}\n\n"
+            yield f"data: {chunk.content}\n\n"
             
     return StreamingResponse(event_stream(), media_type="text/event-stream")
