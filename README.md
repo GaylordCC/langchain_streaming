@@ -10,15 +10,14 @@ Python 3.12.1
 # Install the dependicies
 pip install -r requirements.txt
 
-# Run python project
-python3 main.py
-python3 main_streaming.py
-
-# Run the server for each endpoint file:
-uvicorn main_streaming_endpoint:app --reload
-uvicorn chatopenai_streaming_endpoint:app --reload
-uvicorn azureopenai_streaming_endpoint:app --reload
+# Run the uvicorn's server:
+uvicorn langchain_streaming.streaming:app --reload
 
 # Open the project in the browser
     localhost:8000
     localhost:8000/docs
+
+
+
+# Run python file: main_documentation.py
+python3 main_documentation.py
