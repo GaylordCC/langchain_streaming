@@ -19,14 +19,17 @@ app.add_middleware(
 
 @app.get("/chatopenai-streaming-endpoint")
 async def main():
+    response_text = ""
 
     # OpenAI(model="gpt-3.5-turbo-instruct", temperature=0, max_tokens=512)
-    response_text = ""
-    llm = OpenAI(model="gpt-3.5-turbo-instruct", temperature=0, max_tokens=512)
+    # llm = OpenAI(model="gpt-4o", temperature=0, max_tokens=512)
+
+    llm = ChatOpenAI(model="gpt-4o", temperature=0)
     messages =[("Tell me a joke about dogs")]
+
 
     async def event_stream():
         for chunk in llm.stream(messages):
-            yield f"data: {chunk}\n\n"
+            yield f"data: {chunk.content}\n\n"
  
     return StreamingResponse(event_stream(), media_type="text/event-stream")
