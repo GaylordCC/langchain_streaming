@@ -1,12 +1,12 @@
 from fastapi import FastAPI
 from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
-from openai import AsyncOpenAI
 
 from langchain_openai import ChatOpenAI, OpenAI
+import os
 
 app = FastAPI()
-client = AsyncOpenAI()
+openai_api_key=os.getenv("OPENAI_API_KEY")
 
 # Configure CORS
 app.add_middleware(
@@ -24,12 +24,13 @@ async def main():
     # OpenAI(model="gpt-3.5-turbo-instruct", temperature=0, max_tokens=512)
     # llm = OpenAI(model="gpt-4o", temperature=0, max_tokens=512)
 
-    llm = ChatOpenAI(model="gpt-4o", temperature=0)
-    messages =[("Tell me a joke about dogs")]
+    model = ChatOpenAI(openai_api_key= openai_api_key, model="gpt-4o", temperature=0, streaming=True,)
+    messages =[("Tell me a joke about cat")]
 
-
+    chunks = []
     async def event_stream():
-        for chunk in llm.stream(messages):
+        async for chunk in model.astream(messages):
+            chunks.append(chunk)
             yield f"data: {chunk.content}\n\n"
  
     return StreamingResponse(event_stream(), media_type="text/event-stream")
